@@ -1,5 +1,5 @@
 import { createReducer, on } from "@ngrx/store";
-import { addPost, addPosts } from "./actions.state";
+import { addPost, loadPostsSuccess } from "./actions.state";
 
 export interface Post {
   id?: string | number;
@@ -23,5 +23,5 @@ export const initialState: PostsState = {
 export const postsReducer = createReducer(
   initialState,
   on(addPost, (state, { title, body }) => ({ ...state, posts: [...state.posts, { title, body }] })),
-  on(addPosts, (state, { posts }) => ({ ...state, posts: [...state.posts, ...posts] })),
+  on(loadPostsSuccess, (state, { posts }) => ({ ...state, posts: [...state.posts, ...posts] })),
 );

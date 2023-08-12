@@ -7,6 +7,8 @@ import { StoreModule } from '@ngrx/store';
 import { postsReducer } from './state/reducers.state';
 import { GraphQLModule } from './graphql.module';
 import { HttpClientModule } from '@angular/common/http';
+import { EffectsModule } from '@ngrx/effects';
+import { PostsEffects } from './state/effects.state';
 
 @NgModule({
   declarations: [
@@ -16,6 +18,7 @@ import { HttpClientModule } from '@angular/common/http';
     BrowserModule,
     AppRoutingModule,
     StoreModule.forRoot({ state: postsReducer }, {}),
+    EffectsModule.forRoot(PostsEffects),
     GraphQLModule,
     HttpClientModule
   ],

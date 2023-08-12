@@ -6,7 +6,9 @@ export const addPost = createAction(
   props<{ title: string, body: string }>()
 );
 
-export const addPosts = createAction(
-  'Add posts',
+export const loadPostsSuccess = createAction(
+  'Load posts success',
   props<{ posts: Post[] }>()
 );
+
+export const loadPosts = createAction('Load all posts');
