@@ -5,18 +5,16 @@ import { exhaustMap, map, catchError, EMPTY } from "rxjs";
 
 
 const GET_ALL_POSTS = gql`
-  {
-    posts {
+  query (
+    $options: PageQueryOptions
+  ) {
+    posts(options: $options) {
       data {
         id
         title
-        body
       }
-      links {
-        first {
-          page
-          limit
-        }
+      meta {
+        totalCount
       }
     }
   }
@@ -27,7 +25,14 @@ export class PostsEffects {
 
   loadAllPosts$ = createEffect(() => this.actions$.pipe(
     ofType('Load all posts'),
-    exhaustMap(() => this.apollo.query({ query: GET_ALL_POSTS })
+    exhaustMap(() => this.apollo.query({ query: GET_ALL_POSTS, variables: {
+      "options": {
+        "paginate": {
+          "page": 1,
+          "limit": 5
+        }
+      }
+    } })
       .pipe(
         map(posts => {
           console.log(posts);

@@ -9,6 +9,8 @@ import { GraphQLModule } from './graphql.module';
 import { HttpClientModule } from '@angular/common/http';
 import { EffectsModule } from '@ngrx/effects';
 import { PostsEffects } from './state/effects.state';
+import { PostsListPageComponent } from './components/posts-list-page/posts-list-page.component';
+import { PostPageComponent } from './components/post-page/post-page.component';
 
 @NgModule({
   declarations: [
@@ -20,7 +22,9 @@ import { PostsEffects } from './state/effects.state';
     StoreModule.forRoot({ state: postsReducer }, {}),
     EffectsModule.forRoot(PostsEffects),
     GraphQLModule,
-    HttpClientModule
+    HttpClientModule,
+    PostsListPageComponent,
+    PostPageComponent,
   ],
   providers: [],
   bootstrap: [AppComponent]
