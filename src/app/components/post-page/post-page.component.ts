@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { AppState } from 'src/app/state/reducers.state';
+import { AppState } from 'src/app/state/models.state';
 import { selectPosts } from 'src/app/state/selectors.state';
 
 

@@ -1,5 +1,5 @@
 import { createAction, props } from '@ngrx/store';
-import { Post } from './reducers.state';
+import { Post } from './models.state';
 
 export const addPost = createAction(
   'Add post',

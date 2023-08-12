@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { AppState } from 'src/app/state/reducers.state';
+import { AppState } from 'src/app/state/models.state';
 import { selectPosts } from 'src/app/state/selectors.state';
 
 
@@ -11,7 +11,6 @@ import { selectPosts } from 'src/app/state/selectors.state';
   standalone: true,
 })
 export class PostsListPageComponent {
-  title = 'test-task-posts-angular';
 
   constructor(private store: Store<AppState>) {
     this.store.select(selectPosts).subscribe(console.log);

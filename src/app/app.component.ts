@@ -1,9 +1,8 @@
 import { Component } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { selectPosts, selectState } from './state/selectors.state';
-import { AppState, PostsState } from './state/reducers.state';
+import { selectPosts } from './state/selectors.state';
+import { AppState } from './state/models.state';
 import { addPost, loadPosts } from './state/actions.state';
-import { Apollo, gql } from 'apollo-angular';
 
 @Component({
   selector: 'app-root',
@@ -11,9 +10,8 @@ import { Apollo, gql } from 'apollo-angular';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'test-task-posts-angular';
 
-  constructor(private store: Store<AppState>, private apollo: Apollo) {
+  constructor(private store: Store<AppState>) {
     this.store.select(selectPosts).subscribe(console.log);
 
     setTimeout(() => {
@@ -21,7 +19,5 @@ export class AppComponent {
     }, 2000);
 
     this.store.dispatch(loadPosts());
-
-    // this.apollo.query({ query: GET_ALL_POSTS }).subscribe(data => console.log(data));
   }
 }

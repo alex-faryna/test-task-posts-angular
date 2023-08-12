@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { Apollo, gql } from "apollo-angular";
-import { exhaustMap, map, catchError, EMPTY } from "rxjs";
+import { exhaustMap, map, catchError, EMPTY, of } from "rxjs";
 
 
 const GET_ALL_POSTS = gql`
@@ -20,13 +20,17 @@ const GET_ALL_POSTS = gql`
   }
 `;
 
+const graphQLRes = <T>() => {
+  return map((res: { data: T }) => res.data);
+}
+
 @Injectable()
 export class PostsEffects {
 
   loadAllPosts$ = createEffect(() => this.actions$.pipe(
     ofType('Load all posts'),
     exhaustMap(() => this.apollo.query({ query: GET_ALL_POSTS, variables: {
-      "options": {
+      options: {
         "paginate": {
           "page": 1,
           "limit": 5
@@ -34,6 +38,7 @@ export class PostsEffects {
       }
     } })
       .pipe(
+        graphQLRes(),
         map(posts => {
           console.log(posts);
           return ({ type: 'Load all posts success', payload: [] });
