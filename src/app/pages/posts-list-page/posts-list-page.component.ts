@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, HostBinding } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, HostBinding, ViewChild } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { loadMorePosts } from 'src/app/state/actions.state';
 import { AppState } from 'src/app/state/models.state';
@@ -6,7 +6,6 @@ import { selectLoading, selectPosts } from 'src/app/state/selectors.state';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { tap } from 'rxjs';
-
 
 @Component({
     selector: 'app-posts-list-page',
@@ -18,42 +17,37 @@ import { tap } from 'rxjs';
 })
 export class PostsListPageComponent {
   @HostBinding('class') classes = 'full-size';
+  @ViewChild('observe', { static: true }) observeElement!: ElementRef;
 
   public loading$ = this.store.select(selectLoading);
   public posts$ = this.store.select(selectPosts);
 
   public page = 1;
 
-  constructor(
-    private store: Store<AppState>,
-    private router: Router,
-    private activatedRoute: ActivatedRoute) {
+  constructor(private store: Store<AppState>) { }
 
-      this.activatedRoute.queryParams.subscribe(({ page, search }) => {
-        console.log('page:');
-        console.log(page);
-        this.page = page || 1;
-        this.store.dispatch(loadMorePosts({ params: {
-          paginate: {
-            page: +this.page,
-            limit: 20,
-          },
-          search: { q: "" }
-        } }));
-      });
+  public ngOnInit(): void {
+    this.loadMore();
+    this.initObserver();
   }
 
-  public pageChanged(page: number): void {
-    console.log(page);
-    this.page = page;
+  private loadMore(): void {
+    this.store.dispatch(loadMorePosts({ params: {
+      paginate: {
+        page: +this.page,
+        limit: 20,
+      },
+      search: { q: "" }
+    } }));
+  }
 
-    this.router.navigate([],
-      {
-        relativeTo: this.activatedRoute,
-        queryParams: {
-          page,
-        },
-        queryParamsHandling: 'merge',
-      });
+  private initObserver(): void {
+    const observer = new IntersectionObserver((entries: unknown, observer: unknown) => {
+      console.log(entries)
+    }, { threshold: 1.0 });
+
+    observer.observe(this.observeElement.nativeElement);
+
+    console.log(observer);
   }
 }
