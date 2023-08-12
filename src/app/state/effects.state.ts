@@ -2,6 +2,7 @@ import { Injectable } from "@angular/core";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { Apollo, gql } from "apollo-angular";
 import { exhaustMap, map, catchError, EMPTY, of } from "rxjs";
+import { GetPostsResult } from "./models.state";
 
 
 const GET_ALL_POSTS = gql`
@@ -48,11 +49,11 @@ export class PostsEffects {
 
   loadAllPosts$ = createEffect(() => this.actions$.pipe(
     ofType('Load all posts'),
-    exhaustMap(({ params }) => this.apollo.query({ query: GET_ALL_POSTS, variables: { options: params }})
+    exhaustMap(({ params }) => this.apollo.query<GetPostsResult>({ query: GET_ALL_POSTS, variables: { options: params }})
       .pipe(
         graphQLRes(),
         map(posts => {
-          console.log(posts);
+          console.log(posts.posts.data);
           return ({ type: 'Load all posts success', payload: [] });
         }),
         catchError(() => EMPTY)

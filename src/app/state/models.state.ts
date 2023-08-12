@@ -10,10 +10,18 @@ export interface AppState {
 
 export interface PostsState {
   posts: Post[];
+  total: number;
+  pages?: {
+    first: Page,
+    next: Page,
+    prev: Page,
+    last: Page,
+  }
 }
 
 export const initialState: PostsState = {
-  posts: []
+  posts: [],
+  total: 0,
 };
 
 export interface Page {
@@ -31,6 +39,14 @@ export interface QueryPostsParams {
 export interface GetPostsResult {
   posts: {
     data: Post[],
-
+    links: {
+      first: Page,
+      next: Page,
+      prev: Page,
+      last: Page,
+    },
+    meta: {
+      totalCount: number
+    }
   }
 }
