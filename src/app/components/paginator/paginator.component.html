@@ -1,9 +1,0 @@
-<div class="paginator row">
-  <div *ngFor="let page of pages"
-      class="page"
-      [class.ellipsis]="page === '...'"
-      [class.active]="page === currentPage"
-      (click)="changed(page)">
-    {{ page }}
-  </div>
-</div>

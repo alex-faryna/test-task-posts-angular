@@ -1,9 +1,11 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, HostBinding } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { loadPosts } from 'src/app/state/actions.state';
+import { loadMorePosts } from 'src/app/state/actions.state';
 import { AppState } from 'src/app/state/models.state';
-import { selectPosts } from 'src/app/state/selectors.state';
-import { PaginatorComponent } from "../../components/paginator/paginator.component";
+import { selectLoading, selectPosts } from 'src/app/state/selectors.state';
+import { CommonModule } from '@angular/common';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { tap } from 'rxjs';
 
 
 @Component({
@@ -12,24 +14,46 @@ import { PaginatorComponent } from "../../components/paginator/paginator.compone
     styleUrls: ['./posts-list-page.component.scss'],
     standalone: true,
     changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [PaginatorComponent]
+    imports: [CommonModule, RouterModule]
 })
 export class PostsListPageComponent {
+  @HostBinding('class') classes = 'full-size';
 
-  public queryParams = {
-    page: 1,
-    limit: 10,
-  };
+  public loading$ = this.store.select(selectLoading);
+  public posts$ = this.store.select(selectPosts);
 
+  public page = 1;
 
-  constructor(private store: Store<AppState>) {
-    this.store.select(selectPosts).subscribe(console.log);
+  constructor(
+    private store: Store<AppState>,
+    private router: Router,
+    private activatedRoute: ActivatedRoute) {
 
-    this.store.dispatch(loadPosts({ params: {
-      paginate: this.queryParams,
-      search: {
-        q: "qua"
-      }
-    } }));
+      this.activatedRoute.queryParams.subscribe(({ page, search }) => {
+        console.log('page:');
+        console.log(page);
+        this.page = page || 1;
+        this.store.dispatch(loadMorePosts({ params: {
+          paginate: {
+            page: +this.page,
+            limit: 20,
+          },
+          search: { q: "" }
+        } }));
+      });
+  }
+
+  public pageChanged(page: number): void {
+    console.log(page);
+    this.page = page;
+
+    this.router.navigate([],
+      {
+        relativeTo: this.activatedRoute,
+        queryParams: {
+          page,
+        },
+        queryParamsHandling: 'merge',
+      });
   }
 }

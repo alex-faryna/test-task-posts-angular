@@ -11,6 +11,7 @@ export interface AppState {
 export interface PostsState {
   posts: Post[];
   total: number;
+  loading: boolean;
   pages?: {
     first: Page,
     next: Page,
@@ -22,6 +23,7 @@ export interface PostsState {
 export const initialState: PostsState = {
   posts: [],
   total: 0,
+  loading: false,
 };
 
 export interface Page {

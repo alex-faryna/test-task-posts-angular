@@ -1,3 +1,13 @@
-<span>Posts</span>
+<div class="col-center posts-list-page">
+  <div class="col-center posts-list">
+    <div *ngFor="let post of (posts$ | async)" class="posts-list-item">
+      {{ post.title }}
+    </div>
+  </div>
 
-<app-paginator></app-paginator>
+  <div *ngIf="loading$ | async">
+    Loading...
+  </div>
+
+  <div></div>
+</div>

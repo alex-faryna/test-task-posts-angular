@@ -3,6 +3,7 @@ import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { Apollo, gql } from "apollo-angular";
 import { exhaustMap, map, catchError, EMPTY, of } from "rxjs";
 import { GetPostsResult } from "./models.state";
+import { loadPostsSuccess } from "./actions.state";
 
 
 const GET_ALL_POSTS = gql`
@@ -14,29 +15,7 @@ const GET_ALL_POSTS = gql`
         id
         title
       }
-      links {
-        first {
-          ...Page
-        }
-        prev {
-          ...Page
-        }
-        next {
-          ...Page
-        }
-        last {
-          ...Page
-        }
-      }
-      meta {
-        totalCount
-      }
     }
-  }
-
-  fragment Page on PageLimitPair{
-    page
-    limit
   }
 `;
 
@@ -54,7 +33,7 @@ export class PostsEffects {
         graphQLRes(),
         map(posts => {
           console.log(posts.posts.data);
-          return ({ type: 'Load all posts success', payload: [] });
+          return loadPostsSuccess({ posts: posts.posts.data });
         }),
         catchError(() => EMPTY)
       ))
