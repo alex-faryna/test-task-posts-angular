@@ -13,10 +13,29 @@ const GET_ALL_POSTS = gql`
         id
         title
       }
+      links {
+        first {
+          ...Page
+        }
+        prev {
+          ...Page
+        }
+        next {
+          ...Page
+        }
+        last {
+          ...Page
+        }
+      }
       meta {
         totalCount
       }
     }
+  }
+
+  fragment Page on PageLimitPair{
+    page
+    limit
   }
 `;
 
@@ -29,14 +48,7 @@ export class PostsEffects {
 
   loadAllPosts$ = createEffect(() => this.actions$.pipe(
     ofType('Load all posts'),
-    exhaustMap(() => this.apollo.query({ query: GET_ALL_POSTS, variables: {
-      options: {
-        "paginate": {
-          "page": 1,
-          "limit": 5
-        }
-      }
-    } })
+    exhaustMap(({ params }) => this.apollo.query({ query: GET_ALL_POSTS, variables: { options: params }})
       .pipe(
         graphQLRes(),
         map(posts => {

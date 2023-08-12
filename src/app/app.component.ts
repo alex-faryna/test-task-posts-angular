@@ -14,10 +14,14 @@ export class AppComponent {
   constructor(private store: Store<AppState>) {
     this.store.select(selectPosts).subscribe(console.log);
 
-    setTimeout(() => {
-      this.store.dispatch(addPost({ title: 'Sample title', body: 'Sample body' }));
-    }, 2000);
-
-    this.store.dispatch(loadPosts());
+    this.store.dispatch(loadPosts({ params: {
+      paginate: {
+        page: 2,
+        limit: 20
+      },
+      search: {
+        q: "qua"
+      }
+    } }));
   }
 }

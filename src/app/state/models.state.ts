@@ -27,3 +27,10 @@ export interface QueryPostsParams {
     q: string;
   }
 }
+
+export interface GetPostsResult {
+  posts: {
+    data: Post[],
+
+  }
+}
