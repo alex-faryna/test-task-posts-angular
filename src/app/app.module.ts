@@ -5,6 +5,8 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { StoreModule } from '@ngrx/store';
 import { postsReducer } from './state/reducers.state';
+import { GraphQLModule } from './graphql.module';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -13,7 +15,9 @@ import { postsReducer } from './state/reducers.state';
   imports: [
     BrowserModule,
     AppRoutingModule,
-    StoreModule.forRoot({ state: postsReducer }, {})
+    StoreModule.forRoot({ state: postsReducer }, {}),
+    GraphQLModule,
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]
