@@ -12,17 +12,13 @@ export interface PostsState {
   posts: Post[];
   total: number;
   loading: boolean;
-  pages?: {
-    first: Page,
-    next: Page,
-    prev: Page,
-    last: Page,
-  }
+  pagesLoaded: number;
 }
 
 export const initialState: PostsState = {
   posts: [],
   total: 0,
+  pagesLoaded: 1,
   loading: false,
 };
 

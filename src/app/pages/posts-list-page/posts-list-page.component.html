@@ -1,11 +1,10 @@
 <div class="col-center posts-list-page">
   <div class="col-center posts-list">
     <div *ngFor="let post of (posts$ | async)" class="posts-list-item">
-      {{ post.title }}
+      {{ post.id }} {{ post.title }}
     </div>
   </div>
-
-  <div #observe></div>
+  <div #observe class="observe"></div>
 
   <div *ngIf="loading$ | async">
     Loading...

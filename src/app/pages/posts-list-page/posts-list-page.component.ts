@@ -5,7 +5,7 @@ import { AppState } from 'src/app/state/models.state';
 import { selectLoading, selectPosts } from 'src/app/state/selectors.state';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { tap } from 'rxjs';
+import { BehaviorSubject, Subject, debounceTime, filter, switchMap, tap } from 'rxjs';
 
 @Component({
     selector: 'app-posts-list-page',
@@ -24,30 +24,33 @@ export class PostsListPageComponent {
 
   public page = 1;
 
+  private observedSubject = new Subject();
+  private observe$ = this.posts$.pipe(
+    filter(posts => !!posts.length),
+    switchMap(() => this.observedSubject),
+    filter(Boolean),
+    debounceTime(100),
+   );
+
   constructor(private store: Store<AppState>) { }
 
   public ngOnInit(): void {
     this.loadMore();
     this.initObserver();
+    this.observe$.subscribe(() => this.loadMore());
   }
 
   private loadMore(): void {
-    this.store.dispatch(loadMorePosts({ params: {
-      paginate: {
-        page: +this.page,
-        limit: 20,
-      },
-      search: { q: "" }
-    } }));
+    this.store.dispatch(loadMorePosts());
   }
 
   private initObserver(): void {
-    const observer = new IntersectionObserver((entries: unknown, observer: unknown) => {
-      console.log(entries)
-    }, { threshold: 1.0 });
-
+    const observer = new IntersectionObserver((entries: IntersectionObserverEntry[]) => {
+      console.log('Intersect');
+      if (entries && entries.length) {
+        this.observedSubject.next(entries[0]?.intersectionRatio || 0);
+      }
+    }, { threshold: 1 });
     observer.observe(this.observeElement.nativeElement);
-
-    console.log(observer);
   }
 }

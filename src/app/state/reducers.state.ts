@@ -7,5 +7,10 @@ export const postsReducer = createReducer(
   on(loadingError, state => ({ ...state, loading: false, posts: []})),
   on(addPost, (state, { title, body }) => ({ ...state, posts: [...state.posts, { title, body }] })),
   on(loadMorePosts, state => ({ ...state, loading: true})),
-  on(loadPostsSuccess, (state, { posts }) => ({ ...state, posts: [...state.posts, ...posts], loading: false })),
+  on(loadPostsSuccess, (state, { posts }) => ({
+    ...state,
+    pagesLoaded: state.pagesLoaded + 1,
+    posts: [...state.posts, ...posts],
+    loading: false
+  })),
 );
