@@ -98,10 +98,11 @@ input, textarea {
   border: 2px solid var(--secondary-color);
   background: val(--bg-color);
   border-radius: 4px;
-  padding: 0.5rem;
+  padding: 0.2rem 0.5rem;
   font-size: 20px;
 }
 
 textarea {
+  padding: 0.5rem;
   min-height: 200px;
 }

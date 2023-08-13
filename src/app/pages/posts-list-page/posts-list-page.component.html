@@ -3,7 +3,7 @@
     <div *ngFor="let post of (posts$ | async)" class="posts-list-item p-2 gap-2 row">
       <a [routerLink]="'' + post.id"> {{ post.title }}</a>
       <a class="right" [routerLink]="post.id + '/edit'">Edit</a>
-      <span class="pointer" (click)="clickDelete(post.id!)">Delete</span>
+      <span class="pointer delete-btn" (click)="clickDelete(post.id!)">Delete</span>
     </div>
     <app-loader *ngIf="loading$ | async" />
   </div>
