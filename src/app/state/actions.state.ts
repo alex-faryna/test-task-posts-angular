@@ -21,3 +21,4 @@ export const addPostSuccess = createAction('Add post success', props<{ post: Pos
 export const editPostSuccess = createAction('Edit post success', props<{ post: Post }>());
 export const deletePostSuccess = createAction('Delete post success', props<{ id: number }>());
 
+export const resetPost = createAction('Reset selected action');

@@ -15,7 +15,10 @@
         <span class="bold">Body:</span>
           <textarea formControlName="body"></textarea>
       </div>
-      <div class="save p-1 left pointer" (click)="save()">Save</div>
+      <div
+       [class.disabled]="!this.postForm.valid"
+       class="save p-1 left pointer"
+       (click)="save()">Save</div>
     </div>
   </form>
 </div>

@@ -1,5 +1,5 @@
 import { createReducer, on } from "@ngrx/store";
-import { addPost, addPostSuccess, deletePostSuccess, editPostSuccess, loadMorePosts, loadPost, loadPostSuccess, loadPostsSuccess, loadingError, searchClear, searchPosts } from "./actions.state";
+import { addPost, addPostSuccess, deletePostSuccess, editPostSuccess, loadMorePosts, loadPost, loadPostSuccess, loadPostsSuccess, loadingError, resetPost, searchClear, searchPosts } from "./actions.state";
 import { initialState } from "./models.state";
 
 export const postsReducer = createReducer(
@@ -35,10 +35,10 @@ export const postsReducer = createReducer(
   })),
   on(addPostSuccess, (state, { post }) => {
 
-    console.log("ADDD: " + (state.lastCreatedId + 1));
+    const { selectedPost, ...other } = state;
 
     return {
-      ...state,
+      ...other,
       lastCreatedId: state.lastCreatedId + 1,
       posts: [{ ...post, id: state.lastCreatedId + 1 }, ...state.posts],
     };
@@ -47,8 +47,10 @@ export const postsReducer = createReducer(
     const idx = state.posts.findIndex(st => `${st.id}` === `${post.id}`);
     const oldPost = state.posts.at(idx);
 
+    const { selectedPost, ...other } = state;
+
     return {
-      ...state,
+      ...other,
       posts: [...state.posts.slice(0, idx), { ...oldPost, ...post, }, ...state.posts.slice(idx + 1)],
     };
   }),
@@ -68,5 +70,9 @@ export const postsReducer = createReducer(
   on(searchClear, state => {
     const { search, ...otherState } = state;
     return otherState;
+  }),
+  on(resetPost, state => {
+    const { selectedPost, ...other } = state;
+    return other;
   })
 );

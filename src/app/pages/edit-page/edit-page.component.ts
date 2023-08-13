@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { Store } from '@ngrx/store';
@@ -21,7 +21,7 @@ import { UnsubscribeService } from 'src/app/utils/destroy.service';
 })
 export class EditPageComponent {
 
-  public post$ = this.store.select(selectPost).pipe(startWith(null));
+  public post$ = this.store.select(selectPost);
   public id = 0;
   public postForm = new FormGroup({
     title: new FormControl('', [Validators.required, Validators.minLength(3)]),
@@ -32,7 +32,13 @@ export class EditPageComponent {
     private store: Store<AppState>,
     private route: ActivatedRoute,
     private unsub$: UnsubscribeService,
+    private cdr: ChangeDetectorRef,
     private router: Router) {
+      this.postForm = new FormGroup({
+        title: new FormControl('', [Validators.required, Validators.minLength(3)]),
+        body: new FormControl('')
+      });
+
     this.route.params.pipe(
       map(({ id }) => +id),
       takeUntil(this.unsub$)
@@ -40,13 +46,16 @@ export class EditPageComponent {
       if (id > 0) {
         this.store.dispatch(loadPost({ id: +id }));
       } else {
+        this.postForm.reset();
+        this.postForm.updateValueAndValidity();
 
-        console.log("???");
-        this.postForm.patchValue({ title: '', body: '' });
         this.postForm.get('title')?.enable();
         this.id === 0;
+        this.cdr.markForCheck();
       }
     });
+
+    this.postForm.valueChanges.pipe(startWith(this.postForm.value)).subscribe(console.log);
 
     this.post$.pipe(
       filter(Boolean),
@@ -61,18 +70,18 @@ export class EditPageComponent {
 
   public save(): void {
     const { title, body } = this.postForm.value;
-    if (this.id) {
-      this.store.dispatch(editPost({
-        id: +this.id,
-        title: title || '',
-        body: body || '',
-      }));
-    } else {
-      this.store.dispatch(addPost({
-        title: title || '',
-        body: body || '',
-      }));
-    }
-    void this.router.navigate(['/posts']);
+      if (this.id) {
+        this.store.dispatch(editPost({
+          id: +this.id,
+          title: title || '',
+          body: body || '',
+        }));
+      } else {
+        this.store.dispatch(addPost({
+          title: title || '',
+          body: body || '',
+        }));
+      }
+      void this.router.navigate(['/posts']);
   }
 }

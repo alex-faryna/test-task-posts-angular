@@ -7,3 +7,9 @@
   border: 2px solid var(--secondary-color);
   justify-self: flex-start;
 }
+
+
+.disabled {
+  pointer-events: none;
+  background: var(--bg-color);
+}
