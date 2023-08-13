@@ -45,6 +45,10 @@ export interface GetCreatePostResult {
   createPost: Post
 }
 
+export interface GetUpdatePostResult {
+  updatePost: Post
+}
+
 export interface GetPostsResult {
   posts: {
     data: Post[],

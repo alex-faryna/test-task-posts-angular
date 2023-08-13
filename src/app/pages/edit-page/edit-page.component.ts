@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { filter, map, startWith, switchMap } from 'rxjs';
 import { addPost, editPost, loadPost } from 'src/app/state/actions.state';
@@ -26,7 +26,7 @@ export class EditPageComponent {
     body: new FormControl('')
   });
 
-  constructor(private store: Store<AppState>, private route: ActivatedRoute) {
+  constructor(private store: Store<AppState>, private route: ActivatedRoute, private router: Router) {
     this.route.params.pipe(map(({ id }) => +id)).subscribe(id => {
       console.log(id);
       if (id > 0) {
@@ -48,12 +48,13 @@ export class EditPageComponent {
         id: +this.id,
         title: title || '',
         body: body || '',
-      }))
+      }));
     } else {
       this.store.dispatch(addPost({
         title: title || '',
         body: body || '',
       }));
     }
+    void this.router.navigate(['/posts']);
   }
 }

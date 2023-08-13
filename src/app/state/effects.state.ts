@@ -2,8 +2,8 @@ import { Injectable } from "@angular/core";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { Apollo, gql } from "apollo-angular";
 import { exhaustMap, map, catchError, EMPTY, of, switchMap, take, switchScan } from "rxjs";
-import { AppState, GetCreatePostResult, GetPostResult, GetPostsResult } from "./models.state";
-import { addPostSuccess, loadPostSuccess, loadPostsSuccess, loadingError } from "./actions.state";
+import { AppState, GetCreatePostResult, GetPostResult, GetPostsResult, GetUpdatePostResult } from "./models.state";
+import { addPostSuccess, deletePostSuccess, editPostSuccess, loadPostSuccess, loadPostsSuccess, loadingError } from "./actions.state";
 import { Store } from "@ngrx/store";
 import { selectPagesLoaded, selectPost, selectPostId, selectPosts } from "./selectors.state";
 import { Router } from "@angular/router";
@@ -44,6 +44,26 @@ const ADD_POST = gql`
       title
       body
     }
+  }
+`;
+
+const EDIT_POST = gql`
+  mutation (
+    $id: ID!,
+    $input: UpdatePostInput!
+  ) {
+    updatePost(id: $id, input: $input) {
+      id
+      body
+    }
+  }
+`;
+
+const DELETE_POST = gql`
+  mutation (
+    $id: ID!
+  ) {
+    deletePost(id: $id)
   }
 `;
 
@@ -110,17 +130,28 @@ export class PostsEffects {
     }
   )));
 
-  /*
-  addPost$ = createEffect(() => this.actions$.pipe(
-    ofType('Add post'),
-    exhaustMap(({ title, body }) => {
-      return this.apollo.mutate<GetCreatePostResult>({ mutation: ADD_POST, variables: { input: { title, body } }})
+
+  editPost$ = createEffect(() => this.actions$.pipe(
+    ofType('Edit post'),
+    exhaustMap(({ id, title, body }) => {
+      return this.apollo.mutate<GetUpdatePostResult>({ mutation: EDIT_POST, variables: { id, input: { body } }})
       .pipe(
-        map(post => addPostSuccess({ post: post.data?.createPost! })),
+        map(post => editPostSuccess({ post: post.data?.updatePost! })),
         catchError(() => EMPTY),
       );
     }
-  )));*/
+  )));
+
+  deletePost$ = createEffect(() => this.actions$.pipe(
+    ofType('Delete post'),
+    exhaustMap(({ id }) => {
+      return this.apollo.mutate({ mutation: DELETE_POST, variables: { id }})
+      .pipe(
+        map(() => deletePostSuccess({ id })),
+        catchError(() => EMPTY),
+      );
+    }
+  )));
 
   private post$ = this.store.select(selectPost);
   private postId$ = this.store.select(selectPostId);
@@ -131,7 +162,5 @@ export class PostsEffects {
     private store: Store<AppState>,
     private apollo: Apollo,
     private router: Router,
-  ) {
-
-  }
+  ) { }
 }

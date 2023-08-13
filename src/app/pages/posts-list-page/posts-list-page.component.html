@@ -1,7 +1,10 @@
 <div class="col-center posts-list-page">
   <div class="col-center posts-list">
     <div *ngFor="let post of (posts$ | async)" class="posts-list-item">
-      {{ post.id }} <a [routerLink]="'' + post.id"> {{ post.title }}</a> <a [routerLink]="post.id + '/edit'">Edit ?</a>
+      {{ post.id }}
+      <a [routerLink]="'' + post.id"> {{ post.title }}</a>
+      <a [routerLink]="post.id + '/edit'">Edit ?</a>
+      <span (click)="clickDelete(post.id!)">Delete</span>
     </div>
     <div *ngIf="loading$ | async">
       Loading...

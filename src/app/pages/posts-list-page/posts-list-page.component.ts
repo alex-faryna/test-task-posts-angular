@@ -1,6 +1,6 @@
 import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, HostBinding, ViewChild } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { loadMorePosts } from 'src/app/state/actions.state';
+import { deletePost, loadMorePosts } from 'src/app/state/actions.state';
 import { AppState } from 'src/app/state/models.state';
 import { selectLoading, selectPosts } from 'src/app/state/selectors.state';
 import { CommonModule } from '@angular/common';
@@ -52,5 +52,9 @@ export class PostsListPageComponent {
       }
     }, { threshold: 1 });
     observer.observe(this.observeElement.nativeElement);
+  }
+
+  public clickDelete(id: number): void {
+    this.store.dispatch(deletePost({ id }));
   }
 }

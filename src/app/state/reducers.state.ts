@@ -40,12 +40,23 @@ export const postsReducer = createReducer(
       posts: [...state.posts, { ...post, id: state.lastCreatedId + 1 }],
     };
   }),
-  on(editPostSuccess, (state, { post }) => ({
-    ...state,
-    posts: [...state.posts, post],
-  })),
-  on(deletePostSuccess, (state, { id }) => ({
-    ...state,
-    // posts: [...state.posts, post],
-  })),
+  on(editPostSuccess, (state, { post }) => {
+
+    const idx = state.posts.findIndex(st => st.id === post.id);
+    const oldPost = state.posts.at(idx);
+
+    return {
+      ...state,
+      posts: [...state.posts.slice(0, idx), { ...oldPost, ...post, }, ...state.posts.slice(idx + 1)],
+    };
+  }),
+  on(deletePostSuccess, (state, { id }) => {
+
+    const idx = state.posts.findIndex(post => post.id === id);
+
+    return {
+      ...state,
+      posts: [...state.posts.slice(0, idx), ...state.posts.slice(idx + 1)],
+    };
+  }),
 );
