@@ -3,10 +3,11 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { filter, map, startWith, switchMap } from 'rxjs';
+import { filter, map, startWith, switchMap, takeUntil } from 'rxjs';
 import { addPost, editPost, loadPost } from 'src/app/state/actions.state';
 import { AppState, Post } from 'src/app/state/models.state';
 import { selectPost, selectPosts } from 'src/app/state/selectors.state';
+import { UnsubscribeService } from 'src/app/utils/destroy.service';
 
 
 @Component({
@@ -16,6 +17,7 @@ import { selectPost, selectPosts } from 'src/app/state/selectors.state';
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule, ReactiveFormsModule, RouterModule],
+  providers: [UnsubscribeService],
 })
 export class EditPageComponent {
 
@@ -26,15 +28,24 @@ export class EditPageComponent {
     body: new FormControl('')
   });
 
-  constructor(private store: Store<AppState>, private route: ActivatedRoute, private router: Router) {
-    this.route.params.pipe(map(({ id }) => +id)).subscribe(id => {
-      console.log(id);
+  constructor(
+    private store: Store<AppState>,
+    private route: ActivatedRoute,
+    private unsub$: UnsubscribeService,
+    private router: Router) {
+    this.route.params.pipe(
+      map(({ id }) => +id),
+      takeUntil(this.unsub$)
+    ).subscribe(id => {
       if (id > 0) {
         this.store.dispatch(loadPost({ id: +id }));
       }
     });
 
-    this.post$.pipe(filter(Boolean)).subscribe((post: Post) => {
+    this.post$.pipe(
+      filter(Boolean),
+      takeUntil(this.unsub$),
+    ).subscribe((post: Post) => {
       const { id, title, body } = post;
       this.postForm.patchValue({ title, body });
       this.postForm.get('title')?.disable();

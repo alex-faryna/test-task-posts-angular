@@ -3,11 +3,12 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Output } from '@angul
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, NavigationEnd, Router, RouterModule } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { debounceTime, distinctUntilChanged, filter, map, startWith, switchMap } from 'rxjs';
+import { debounceTime, distinctUntilChanged, filter, map, startWith, switchMap, takeUntil } from 'rxjs';
 import { loadPost } from 'src/app/state/actions.state';
 import { AppState, Post } from 'src/app/state/models.state';
 import { selectPost, selectPosts } from 'src/app/state/selectors.state';
 import {Location} from '@angular/common';
+import { UnsubscribeService } from 'src/app/utils/destroy.service';
 
 @Component({
   selector: 'app-header',
@@ -16,6 +17,7 @@ import {Location} from '@angular/common';
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule, ReactiveFormsModule, RouterModule],
+  providers: [UnsubscribeService],
 })
 export class HeaderComponent {
 
@@ -34,15 +36,26 @@ export class HeaderComponent {
 
   public searchControl = new FormControl('');
 
-  constructor(private store: Store<AppState>, private route: ActivatedRoute, private router: Router, public location: Location) {
+  constructor(
+    private store: Store<AppState>,
+    private route: ActivatedRoute,
+    private router: Router,
+    private unsub$: UnsubscribeService,
+    public location: Location,
+  ) {
 
-    this.post$.pipe(filter(Boolean)).subscribe((post: Post) => {
+    this.post$.pipe(
+      filter(Boolean),
+      takeUntil(this.unsub$)
+    ).subscribe((post: Post) => {
       const { title, body } = post;
       this.postForm.patchValue({ title, body });
     });
 
-    this.searchControl.valueChanges
-    .pipe(debounceTime(100), distinctUntilChanged())
-    .subscribe(value => this.search.emit(value || ''));
+    this.searchControl.valueChanges.pipe(
+      debounceTime(100),
+      distinctUntilChanged(),
+      takeUntil(this.unsub$),
+    ).subscribe(value => this.search.emit(value || ''));
   }
 }

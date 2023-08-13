@@ -5,8 +5,9 @@ import { AppState } from 'src/app/state/models.state';
 import { selectLoading, selectPosts } from 'src/app/state/selectors.state';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { BehaviorSubject, Subject, debounceTime, filter, switchMap, tap } from 'rxjs';
+import { BehaviorSubject, Subject, debounceTime, filter, switchMap, takeUntil, tap } from 'rxjs';
 import { LoaderComponent } from 'src/app/components/loader/loader.component';
+import { UnsubscribeService } from 'src/app/utils/destroy.service';
 
 @Component({
     selector: 'app-posts-list-page',
@@ -14,7 +15,8 @@ import { LoaderComponent } from 'src/app/components/loader/loader.component';
     styleUrls: ['./posts-list-page.component.scss'],
     standalone: true,
     changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [CommonModule, RouterModule, LoaderComponent]
+    imports: [CommonModule, RouterModule, LoaderComponent],
+    providers: [UnsubscribeService],
 })
 export class PostsListPageComponent {
   @HostBinding('class') classes = 'full-size';
@@ -31,9 +33,13 @@ export class PostsListPageComponent {
     switchMap(() => this.observedSubject),
     filter(Boolean),
     debounceTime(100),
+    takeUntil(this.unsub$),
    );
 
-  constructor(private store: Store<AppState>) { }
+  constructor(
+    private store: Store<AppState>,
+    private unsub$: UnsubscribeService,
+  ) { }
 
   public ngOnInit(): void {
     this.loadMore(true);
