@@ -14,12 +14,12 @@ export const postsReducer = createReducer(
   on(loadPostsSuccess, (state, { posts }) => {
 
     const allPosts = [...state.posts, ...posts];
-    const custom = allPosts.filter(post => post.id! > 100).sort((a, b) => b.id! - a.id!);
-    const other = allPosts.filter(post => post.id! <= 100).sort((a, b) => a.id! - b.id!);
+    const custom = allPosts.filter(post => post.id! > 100).sort((a, b) => +b.id! - +a.id!);
+    const other = allPosts.filter(post => post.id! <= 100).sort((a, b) => +a.id! - +b.id!);
     return {
       ...state,
       pagesLoaded: state.pagesLoaded + 1,
-      posts: [...custom, ...other].filter((v,i,a)=>a.findIndex(v2=>(v2.id===v.id))===i),
+      posts: [...custom, ...other].filter((v,i,a)=>a.findIndex(v2=>(`${v2.id}`===`${v.id}`))===i),
       loading: false
     }
   }),
@@ -44,8 +44,7 @@ export const postsReducer = createReducer(
     };
   }),
   on(editPostSuccess, (state, { post }) => {
-
-    const idx = state.posts.findIndex(st => st.id === post.id);
+    const idx = state.posts.findIndex(st => `${st.id}` === `${post.id}`);
     const oldPost = state.posts.at(idx);
 
     return {

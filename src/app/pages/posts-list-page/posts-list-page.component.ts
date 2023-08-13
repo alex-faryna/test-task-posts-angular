@@ -45,6 +45,8 @@ export class PostsListPageComponent {
     this.loadMore(true);
     this.initObserver();
     this.observe$.subscribe(() => this.loadMore());
+
+    this.store.select(selectPosts).subscribe(console.dir);
   }
 
   private loadMore(clear = false): void {

@@ -40,6 +40,8 @@ export class EditPageComponent {
       if (id > 0) {
         this.store.dispatch(loadPost({ id: +id }));
       } else {
+
+        console.log("???");
         this.postForm.patchValue({ title: '', body: '' });
         this.postForm.get('title')?.enable();
         this.id === 0;

@@ -96,6 +96,8 @@ export class PostsEffects {
       switchMap(post => {
 
         console.log(post);
+
+
         if (post) {
           return of(loadPostSuccess({ post }));
         }
@@ -133,10 +135,10 @@ export class PostsEffects {
 
   editPost$ = createEffect(() => this.actions$.pipe(
     ofType('Edit post'),
-    exhaustMap(({ id, title, body }) => {
+    exhaustMap(({ id, body }) => {
       return this.apollo.mutate<GetUpdatePostResult>({ mutation: EDIT_POST, variables: { id, input: { body } }})
       .pipe(
-        map(post => editPostSuccess({ post: post.data?.updatePost! })),
+        map(post => editPostSuccess({ post: { ...post.data?.updatePost!, id } })),
         catchError(() => EMPTY),
       );
     }

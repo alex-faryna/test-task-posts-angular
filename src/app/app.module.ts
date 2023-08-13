@@ -24,6 +24,9 @@ export function debug(reducer: ActionReducer<any>): ActionReducer<any> {
 
 export const metaReducers: MetaReducer<any>[] = [debug];
 
+
+//metaReducers
+
 @NgModule({
   declarations: [
     AppComponent
@@ -31,7 +34,7 @@ export const metaReducers: MetaReducer<any>[] = [debug];
   imports: [
     BrowserModule,
     AppRoutingModule,
-    StoreModule.forRoot({ state: postsReducer }, { metaReducers }),
+    StoreModule.forRoot({ state: postsReducer }, {  }),
     EffectsModule.forRoot(PostsEffects),
     GraphQLModule,
     HttpClientModule,
