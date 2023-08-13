@@ -14,6 +14,7 @@ export interface PostsState {
   loading: boolean;
   pagesLoaded: number;
   selectedPost?: number;
+  lastCreatedId: number;
 }
 
 export const initialState: PostsState = {
@@ -21,6 +22,7 @@ export const initialState: PostsState = {
   total: 0,
   pagesLoaded: 1,
   loading: false,
+  lastCreatedId: 100,
 };
 
 export interface Page {

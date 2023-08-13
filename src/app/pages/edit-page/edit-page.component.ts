@@ -3,7 +3,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { filter, map, switchMap } from 'rxjs';
+import { filter, map, startWith, switchMap } from 'rxjs';
 import { addPost, editPost, loadPost } from 'src/app/state/actions.state';
 import { AppState, Post } from 'src/app/state/models.state';
 import { selectPost, selectPosts } from 'src/app/state/selectors.state';
@@ -19,7 +19,7 @@ import { selectPost, selectPosts } from 'src/app/state/selectors.state';
 })
 export class EditPageComponent {
 
-  public post$ = this.store.select(selectPost);
+  public post$ = this.store.select(selectPost).pipe(startWith(null));
   public id = 0;
   public postForm = new FormGroup({
     title: new FormControl('', [Validators.required, Validators.minLength(3)]),
