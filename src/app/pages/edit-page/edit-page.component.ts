@@ -39,6 +39,10 @@ export class EditPageComponent {
     ).subscribe(id => {
       if (id > 0) {
         this.store.dispatch(loadPost({ id: +id }));
+      } else {
+        this.postForm.patchValue({ title: '', body: '' });
+        this.postForm.get('title')?.enable();
+        this.id === 0;
       }
     });
 

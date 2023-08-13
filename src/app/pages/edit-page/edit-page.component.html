@@ -2,23 +2,20 @@
 <div class="p-4 col gap-2">
   <div class="row gap-1">
     <span class="bold">{{ +id > 0 ? 'Edit post #' + id : 'Create new post:' }}</span>
-    <!-- span class="bold">Post #{{ post.id }}</span -->
   </div>
 
   <form [formGroup]="postForm">
     <div class="post-form col center gap-2">
       <div class="col gap-1">
         <span class="bold">Title:</span>
-        <!-- span>{{ post.title }}</span -->
         <input type="text" formControlName="title"/>
       </div>
 
       <div class="col gap-1">
         <span class="bold">Body:</span>
           <textarea formControlName="body"></textarea>
-        <!-- span>{{ post.body }}</span -->
       </div>
-      <button (click)="save()">Save</button>
+      <div class="save p-1 left pointer" (click)="save()">Save</div>
     </div>
   </form>
 </div>
