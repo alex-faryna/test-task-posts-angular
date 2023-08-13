@@ -34,10 +34,13 @@ export const postsReducer = createReducer(
     selectedPost: post.id as number,
   })),
   on(addPostSuccess, (state, { post }) => {
+
+    console.log("ADDD: " + (state.lastCreatedId + 1));
+
     return {
       ...state,
       lastCreatedId: state.lastCreatedId + 1,
-      posts: [...state.posts, { ...post, id: state.lastCreatedId + 1 }],
+      posts: [{ ...post, id: state.lastCreatedId + 1 }, ...state.posts],
     };
   }),
   on(editPostSuccess, (state, { post }) => {
