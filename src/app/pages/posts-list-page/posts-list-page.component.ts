@@ -35,13 +35,13 @@ export class PostsListPageComponent {
   constructor(private store: Store<AppState>) { }
 
   public ngOnInit(): void {
-    this.loadMore();
+    this.loadMore(true);
     this.initObserver();
     this.observe$.subscribe(() => this.loadMore());
   }
 
-  private loadMore(): void {
-    this.store.dispatch(loadMorePosts());
+  private loadMore(clear = false): void {
+    this.store.dispatch(loadMorePosts({ clear }));
   }
 
   private initObserver(): void {

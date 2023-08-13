@@ -5,7 +5,7 @@ import { exhaustMap, map, catchError, EMPTY, of, switchMap, take } from "rxjs";
 import { AppState, GetPostResult, GetPostsResult } from "./models.state";
 import { loadPostSuccess, loadPostsSuccess } from "./actions.state";
 import { Store } from "@ngrx/store";
-import { selectPagesLoaded, selectPost, selectPosts } from "./selectors.state";
+import { selectPagesLoaded, selectPost, selectPostId, selectPosts } from "./selectors.state";
 
 
 const GET_ALL_POSTS = gql`
@@ -58,24 +58,25 @@ export class PostsEffects {
 
   loadPost$ = createEffect(() => this.actions$.pipe(
     ofType('Load post by id'),
-    exhaustMap(({ id }) => this.post$.pipe(
+    exhaustMap(() => this.post$.pipe(
       take(1),
       switchMap(post => {
         if (post) {
           return of(loadPostSuccess({ post }));
         }
 
-        return this.apollo.query<GetPostResult>({ query: GET_POST, variables: { id }})
+        return this.postId$.pipe(switchMap(id => this.apollo.query<GetPostResult>({ query: GET_POST, variables: { id }})
         .pipe(
           graphQLRes(),
           map(post => loadPostSuccess({ post: post.post })),
           catchError(() => EMPTY)
-        )
+        )))
       })))
     )
   );
 
   private post$ = this.store.select(selectPost);
+  private postId$ = this.store.select(selectPostId);
   private pagesLoaded$ = this.store.select(selectPagesLoaded);
 
   constructor(
