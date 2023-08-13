@@ -13,6 +13,7 @@ export interface PostsState {
   total: number;
   loading: boolean;
   pagesLoaded: number;
+  selectedPost?: number;
 }
 
 export const initialState: PostsState = {
@@ -32,6 +33,10 @@ export interface QueryPostsParams {
   search?: {
     q: string;
   }
+}
+
+export interface GetPostResult {
+  post: Post
 }
 
 export interface GetPostsResult {

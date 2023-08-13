@@ -1,12 +1,12 @@
 <div class="col-center posts-list-page">
   <div class="col-center posts-list">
     <div *ngFor="let post of (posts$ | async)" class="posts-list-item">
-      {{ post.id }} {{ post.title }}
+      {{ post.id }} <a [routerLink]="'' + post.id"> {{ post.title }}</a>
+    </div>
+    <div *ngIf="loading$ | async">
+      Loading...
     </div>
   </div>
-  <div #observe class="observe"></div>
 
-  <div *ngIf="loading$ | async">
-    Loading...
-  </div>
+  <div #observe class="observe"></div>
 </div>

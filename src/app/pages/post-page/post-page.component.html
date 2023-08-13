@@ -1,1 +1,5 @@
-<span>Post 44</span>
+<ng-container *ngIf="post$ | async as post">
+  <span>Post {{ post.id }}</span>
+  <span>{{ post.title }}</span>
+  <span>{{ post.body }}</span>
+</ng-container>

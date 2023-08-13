@@ -1,5 +1,5 @@
 import { createReducer, on } from "@ngrx/store";
-import { addPost, loadMorePosts, loadPostsSuccess, loadingError } from "./actions.state";
+import { addPost, loadMorePosts, loadPost, loadPostSuccess, loadPostsSuccess, loadingError } from "./actions.state";
 import { initialState } from "./models.state";
 
 export const postsReducer = createReducer(
@@ -12,5 +12,15 @@ export const postsReducer = createReducer(
     pagesLoaded: state.pagesLoaded + 1,
     posts: [...state.posts, ...posts],
     loading: false
+  })),
+  on(loadPost, (state, { id }) => ({
+    ...state,
+    selectedPost: id,
+    loading: true,
+  })),
+  on(loadPostSuccess, (state, { post }) => ({
+    ...state,
+    posts: state.posts.length ? state.posts : [post],
+    selectedPost: post.id as number,
   })),
 );

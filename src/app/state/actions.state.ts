@@ -4,6 +4,8 @@ import { Post, QueryPostsParams } from './models.state';
 export const loadingError = createAction('Loaded error');
 export const loadPostsSuccess = createAction('Load posts success', props<{ posts: Post[] }>());
 export const loadMorePosts = createAction('Load all posts');
+export const loadPost = createAction('Load post by id', props<{ id: number }>());
+export const loadPostSuccess = createAction('Load post success', props<{ post: Post }>());
 
 // CRUD
 export const searchPosts = createAction('Search', props<{ query: string }>());
