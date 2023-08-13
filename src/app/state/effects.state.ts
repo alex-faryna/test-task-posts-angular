@@ -1,11 +1,12 @@
 import { Injectable } from "@angular/core";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { Apollo, gql } from "apollo-angular";
-import { exhaustMap, map, catchError, EMPTY, of, switchMap, take } from "rxjs";
-import { AppState, GetPostResult, GetPostsResult } from "./models.state";
-import { loadPostSuccess, loadPostsSuccess } from "./actions.state";
+import { exhaustMap, map, catchError, EMPTY, of, switchMap, take, switchScan } from "rxjs";
+import { AppState, GetCreatePostResult, GetPostResult, GetPostsResult } from "./models.state";
+import { addPostSuccess, loadPostSuccess, loadPostsSuccess, loadingError } from "./actions.state";
 import { Store } from "@ngrx/store";
 import { selectPagesLoaded, selectPost, selectPostId, selectPosts } from "./selectors.state";
+import { Router } from "@angular/router";
 
 
 const GET_ALL_POSTS = gql`
@@ -27,6 +28,18 @@ const GET_POST = gql`
     $id: ID!
   ) {
     post(id: $id) {
+      id
+      title
+      body
+    }
+  }
+`;
+
+const ADD_POST = gql`
+  mutation (
+    $input: CreatePostInput!
+  ) {
+    createPost(input: $input) {
       id
       title
       body
@@ -61,6 +74,8 @@ export class PostsEffects {
     exhaustMap(() => this.post$.pipe(
       take(1),
       switchMap(post => {
+
+        console.log(post);
         if (post) {
           return of(loadPostSuccess({ post }));
         }
@@ -68,12 +83,44 @@ export class PostsEffects {
         return this.postId$.pipe(switchMap(id => this.apollo.query<GetPostResult>({ query: GET_POST, variables: { id }})
         .pipe(
           graphQLRes(),
-          map(post => loadPostSuccess({ post: post.post })),
-          catchError(() => EMPTY)
+          map(post => {
+            if (post.post.id) {
+              return loadPostSuccess({ post: post.post });
+            }
+            void this.router.navigate(['/posts']);
+            return loadingError();
+          }),
+          catchError(() => {
+            void this.router.navigate(['/posts']);
+            return EMPTY;
+          })
         )))
       })))
     )
   );
+
+  addPost$ = createEffect(() => this.actions$.pipe(
+    ofType('Add post'),
+    exhaustMap(({ title, body }) => {
+      return this.apollo.mutate<GetCreatePostResult>({ mutation: ADD_POST, variables: { input: { title, body } }})
+      .pipe(
+        map(post => addPostSuccess({ post: post.data?.createPost! })),
+        catchError(() => EMPTY),
+      );
+    }
+  )));
+
+  /*
+  addPost$ = createEffect(() => this.actions$.pipe(
+    ofType('Add post'),
+    exhaustMap(({ title, body }) => {
+      return this.apollo.mutate<GetCreatePostResult>({ mutation: ADD_POST, variables: { input: { title, body } }})
+      .pipe(
+        map(post => addPostSuccess({ post: post.data?.createPost! })),
+        catchError(() => EMPTY),
+      );
+    }
+  )));*/
 
   private post$ = this.store.select(selectPost);
   private postId$ = this.store.select(selectPostId);
@@ -83,6 +130,7 @@ export class PostsEffects {
     private actions$: Actions,
     private store: Store<AppState>,
     private apollo: Apollo,
+    private router: Router,
   ) {
 
   }

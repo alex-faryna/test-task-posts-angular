@@ -27,7 +27,6 @@ export class HeaderComponent {
   });
 
   constructor(private store: Store<AppState>, private route: ActivatedRoute) {
-    this.route.params.subscribe(({ id }) => this.store.dispatch(loadPost({ id })));
 
 
     this.post$.pipe(filter(Boolean)).subscribe((post: Post) => {

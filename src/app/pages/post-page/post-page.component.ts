@@ -24,6 +24,9 @@ export class PostPageComponent {
     this.route.params.subscribe(({ id }) => this.store.dispatch(loadPost({ id })));
 
 
-    this.post$.subscribe(console.log);
+    this.post$.subscribe(p => {
+      console.log('------');
+      console.log(p);
+    });
   }
 }

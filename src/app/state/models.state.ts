@@ -1,5 +1,5 @@
 export interface Post {
-  id?: string | number;
+  id?: number;
   title: string;
   body: string;
 }
@@ -37,6 +37,10 @@ export interface QueryPostsParams {
 
 export interface GetPostResult {
   post: Post
+}
+
+export interface GetCreatePostResult {
+  createPost: Post
 }
 
 export interface GetPostsResult {
