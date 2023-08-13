@@ -6,9 +6,7 @@
       <a [routerLink]="post.id + '/edit'">Edit ?</a>
       <span (click)="clickDelete(post.id!)">Delete</span>
     </div>
-    <div *ngIf="loading$ | async">
-      Loading...
-    </div>
+    <app-loader *ngIf="loading$ | async" />
   </div>
 
   <div #observe class="observe"></div>

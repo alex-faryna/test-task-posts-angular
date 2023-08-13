@@ -6,6 +6,7 @@ import { selectLoading, selectPosts } from 'src/app/state/selectors.state';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { BehaviorSubject, Subject, debounceTime, filter, switchMap, tap } from 'rxjs';
+import { LoaderComponent } from 'src/app/components/loader/loader.component';
 
 @Component({
     selector: 'app-posts-list-page',
@@ -13,7 +14,7 @@ import { BehaviorSubject, Subject, debounceTime, filter, switchMap, tap } from '
     styleUrls: ['./posts-list-page.component.scss'],
     standalone: true,
     changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [CommonModule, RouterModule]
+    imports: [CommonModule, RouterModule, LoaderComponent]
 })
 export class PostsListPageComponent {
   @HostBinding('class') classes = 'full-size';
