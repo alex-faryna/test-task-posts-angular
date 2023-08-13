@@ -11,6 +11,7 @@ import { EffectsModule } from '@ngrx/effects';
 import { PostsEffects } from './state/effects.state';
 import { PostsListPageComponent } from './pages/posts-list-page/posts-list-page.component';
 import { PostPageComponent } from './pages/post-page/post-page.component';
+import { HeaderComponent } from './components/header/header.component';
 
 @NgModule({
   declarations: [
@@ -25,6 +26,7 @@ import { PostPageComponent } from './pages/post-page/post-page.component';
     HttpClientModule,
     PostsListPageComponent,
     PostPageComponent,
+    HeaderComponent,
   ],
   providers: [],
   bootstrap: [AppComponent]
