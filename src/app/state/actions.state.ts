@@ -2,7 +2,9 @@ import { createAction, props } from '@ngrx/store';
 import { Post, QueryPostsParams } from './models.state';
 
 export const loadingError = createAction('Loaded error');
+
 export const searchPosts = createAction('Search', props<{ query: string }>());
+export const searchClear = createAction('Search clear');
 
 export const loadPost = createAction('Load post by id', props<{ id: number }>());
 export const loadMorePosts = createAction('Load all posts', props<{ clear?: boolean }>());

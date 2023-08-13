@@ -23,7 +23,6 @@ export class PostPageComponent {
   constructor(private store: Store<AppState>, private route: ActivatedRoute) {
     this.route.params.subscribe(({ id }) => this.store.dispatch(loadPost({ id })));
 
-
     this.post$.subscribe(p => {
       console.log('------');
       console.log(p);

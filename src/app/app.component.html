@@ -1,4 +1,4 @@
 <div class="full-size col-stretch">
-  <app-header />
+  <app-header (search)="search($event)" (clear)="clear()"/>
   <router-outlet />
 </div>

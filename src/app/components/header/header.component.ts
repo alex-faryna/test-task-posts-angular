@@ -1,9 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, EventEmitter, Output } from '@angular/core';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { filter, map, switchMap } from 'rxjs';
+import { debounceTime, distinctUntilChanged, filter, map, switchMap } from 'rxjs';
 import { loadPost } from 'src/app/state/actions.state';
 import { AppState, Post } from 'src/app/state/models.state';
 import { selectPost, selectPosts } from 'src/app/state/selectors.state';
@@ -15,9 +15,12 @@ import { selectPost, selectPosts } from 'src/app/state/selectors.state';
   styleUrls: ['./header.component.scss'],
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule],
 })
 export class HeaderComponent {
+
+  @Output() public search = new EventEmitter<string>();
+  @Output() public clear = new EventEmitter();
 
   public post$ = this.store.select(selectPost);
 
@@ -26,12 +29,17 @@ export class HeaderComponent {
     body: new FormControl('')
   });
 
-  constructor(private store: Store<AppState>, private route: ActivatedRoute) {
+  public searchControl = new FormControl('');
 
+  constructor(private store: Store<AppState>, private route: ActivatedRoute) {
 
     this.post$.pipe(filter(Boolean)).subscribe((post: Post) => {
       const { title, body } = post;
       this.postForm.patchValue({ title, body });
     });
+
+    this.searchControl.valueChanges
+    .pipe(debounceTime(100), distinctUntilChanged())
+    .subscribe(value => this.search.emit(value || ''));
   }
 }

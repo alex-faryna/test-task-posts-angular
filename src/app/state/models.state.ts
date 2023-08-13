@@ -15,6 +15,7 @@ export interface PostsState {
   pagesLoaded: number;
   selectedPost?: number;
   lastCreatedId: number;
+  search?: string;
 }
 
 export const initialState: PostsState = {

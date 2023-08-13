@@ -1,5 +1,5 @@
 import { createReducer, on } from "@ngrx/store";
-import { addPost, addPostSuccess, deletePostSuccess, editPostSuccess, loadMorePosts, loadPost, loadPostSuccess, loadPostsSuccess, loadingError } from "./actions.state";
+import { addPost, addPostSuccess, deletePostSuccess, editPostSuccess, loadMorePosts, loadPost, loadPostSuccess, loadPostsSuccess, loadingError, searchClear, searchPosts } from "./actions.state";
 import { initialState } from "./models.state";
 
 export const postsReducer = createReducer(
@@ -59,4 +59,12 @@ export const postsReducer = createReducer(
       posts: [...state.posts.slice(0, idx), ...state.posts.slice(idx + 1)],
     };
   }),
+  on(searchPosts, (state, { query }) => ({
+    ...state,
+    search: query
+  })),
+  on(searchClear, state => {
+    const { search, ...otherState } = state;
+    return otherState;
+  })
 );
