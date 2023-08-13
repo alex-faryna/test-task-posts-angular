@@ -37,6 +37,7 @@ export class EditPageComponent {
     this.post$.pipe(filter(Boolean)).subscribe((post: Post) => {
       const { id, title, body } = post;
       this.postForm.patchValue({ title, body });
+      this.postForm.get('title')?.disable();
       this.id = +(id || 0);
     });
   }

@@ -10,8 +10,8 @@
   height: 24px;
   margin: 6px;
   border-radius: 50%;
-  border: 4px solid red;
-  border-color: red transparent red transparent;
+  border: 4px solid var(--additional-color);
+  border-color: var(--additional-color) transparent var(--additional-color) transparent;
   animation: loader 1.2s linear infinite;
 }
 @keyframes loader {

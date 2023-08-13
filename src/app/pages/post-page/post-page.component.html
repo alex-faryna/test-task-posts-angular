@@ -1,6 +1,17 @@
-<ng-container *ngIf="post$ | async as post">
-  <a [routerLink]="'edit'">Edit ?</a>
-  <span>Post {{ post.id }}</span>
-  <span>{{ post.title }}</span>
-  <span>{{ post.body }}</span>
-</ng-container>
+<div *ngIf="post$ | async as post" class="col-stretch">
+  <div class="p-4 col gap-2">
+    <div class="row gap-1">
+      <span class="bold">Post #{{ post.id }}</span>
+      <a class="underline" [routerLink]="'edit'">Edit</a>
+    </div>
+    <div class="col gap-1">
+      <span class="bold">Title:</span>
+      <span>{{ post.title }}</span>
+    </div>
+
+    <div class="col gap-1">
+      <span class="bold">Body:</span>
+      <span>{{ post.body }}</span>
+    </div>
+  </div>
+</div>

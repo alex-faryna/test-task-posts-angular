@@ -2,5 +2,6 @@
   min-height: 50px;
   max-height: 50px;
 
-  background: #ccc;
+  background: var(--bg-color);
+  border-bottom: 2px solid var(--secondary-color);
 }

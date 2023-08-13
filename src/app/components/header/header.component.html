@@ -1,6 +1,8 @@
-<div class="header row">
-  <a [routerLink]="'/posts'">Header !</a>
-  <a [routerLink]="'/posts/0/edit'">Create</a>
-  <input type="text" [formControl]="searchControl"/>
-  <span (click)="clear.emit()">Clear</span>
+<div class="header row p-2 gap-2">
+  <a class="bold" [routerLink]="'/posts'">Posts list</a>
+  <div *ngIf="showSearch$ | async" class="right flex gap-1">
+    <input type="text" [formControl]="searchControl"/>
+    <span (click)="clear.emit()">Clear</span>
+  </div>
+  <a class="right" [routerLink]="'/posts/0/edit'">Create</a>
 </div>
